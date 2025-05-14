@@ -45,6 +45,56 @@
       <p>&copy; 2023 Mergington High School</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+      async function loadActivities() {
+        const res = await fetch('/activities');
+        const activities = await res.json();
+        const container = document.getElementById('activities-container');
+        container.innerHTML = '';
+        Object.entries(activities).forEach(([name, info]) => {
+          const card = document.createElement('div');
+          card.className = 'activity-card';
+          card.innerHTML = `
+            <h2>${name}</h2>
+            <p><strong>Description:</strong> ${info.description}</p>
+            <p><strong>Schedule:</strong> ${info.schedule}</p>
+            <p><strong>Max Participants:</strong> ${info.max_participants}</p>
+            <div class="participants-section">
+              <strong>Participants:</strong>
+              <ul>
+                ${info.participants.length > 0
+                  ? info.participants.map(email => `<li>${email}</li>`).join('')
+                  : '<li><em>No participants yet</em></li>'}
+              </ul>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+      loadActivities();
+    </script>
+    <style>
+      .activity-card {
+        padding: 1.5em;
+        margin-bottom: 1.5em;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        background: #fff;
+      }
+      .participants-section {
+        margin-top: 1em;
+        background: #f8f9fa;
+        padding: 0.75em 1em;
+        border-radius: 6px;
+      }
+      .participants-section ul {
+        margin: 0.5em 0 0 1em;
+        padding: 0;
+      }
+      .participants-section li {
+        font-size: 0.97em;
+        color: #333;
+      }
+    </style>
   </body>
 </html>
